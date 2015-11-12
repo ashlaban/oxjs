@@ -1,0 +1,38 @@
+{
+  "name": "oxjs",
+  "version": "0.0.0",
+  "description": "An engine and application framework for building games based on hexagons.",
+  "main": "ox.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashlaban/oxjs.git"
+  },
+  "keywords": [
+    "hex",
+    "hexagon",
+    "2d",
+    "graphics",
+    "engine",
+    "application",
+    "app",
+    "framework"
+  ],
+  "author": "ashlaban",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ashlaban/oxjs/issues"
+  },
+  "homepage": "https://github.com/ashlaban/oxjs#readme",
+  "devDependencies": {
+    "bower": "^1.6.5",
+    "browserify": "^12.0.1",
+    "gulp": "^3.9.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "^1.4.2",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}

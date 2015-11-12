@@ -1,6 +1,6 @@
+// Define module HexMath
 
-
-var HexMath = (function () {
+module.exports = (function () {
 
 	var direction = {
 		north    : {x: 0, y: 1, z:-1},
@@ -42,8 +42,10 @@ var HexMath = (function () {
 	var hexShape  = new PIXI.Polygon(hexPoints);
 
 	// Seriously!?
-	var hexOutlinePoints = hexPoints.map( function(val){return val-0.5;} );
-	var hexOutlineShape  = new PIXI.Polygon(hexOutlinePoints);
+	// var hexOutlinePoints = hexPoints.map( function(val){return val-0.5;} );
+	// var hexOutlineShape  = new PIXI.Polygon(hexOutlinePoints);
+	var hexOutlinePoints = hexPoints;
+	var hexOutlineShape  = hexShape;
 
 	var hexEdge = {
 		north    : function(t) {return new PIXI.Polygon([-cos_60, -sin_60,  cos_60, -sin_60,  cos_60+t*cos_60, -sin_60+t*sin_60, -cos_60-t*cos_60, -sin_60+t*sin_60 ]);},

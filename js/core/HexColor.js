@@ -1,4 +1,5 @@
-var HexColor = (function () {
+// Define module HexColor
+define(function () {
 
     function isRGB(c) {
         return  (
@@ -281,4 +282,4 @@ var HexColor = (function () {
 
     return API;
 
-}());
+});

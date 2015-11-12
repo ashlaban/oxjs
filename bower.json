@@ -1,0 +1,34 @@
+{
+  "name": "oxjs",
+  "description": "An engine and application framework for building games based on hexagons.",
+  "main": "ox.js",
+  "authors": [
+    "ashlaban"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "hex",
+    "hexagon",
+    "2d",
+    "graphics",
+    "engine",
+    "application",
+    "app",
+    "framework"
+  ],
+  "homepage": "https://github.com/ashlaban/oxjs",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "mersennetwister": "~0.2.2",
+    "hammerjs": "~2.0.4",
+    "pixi.js": "~3.0.8"
+  }
+}

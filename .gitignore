@@ -1,0 +1,13 @@
+# oxjs specific
+lib/
+
+# Node
+node_Modules/
+
+# Bower
+bower_components/
+
+# Git files
+
+# Mac files
+*.DS_Store
