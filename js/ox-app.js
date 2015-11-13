@@ -1,8 +1,8 @@
 "use strict";
 
-var HexCell = require('./core/HexCell.js');
-var HexMath = require('./core/HexMath.js');
-var HexAnimationSystem = require('./core/HexAnimationSystem.js');
+var OxCell = require('./core/ox-cell.js');
+var OxMath = require('./core/ox-math.js');
+var OxAnimationSystem = require('./core/ox-animation-system.js');
 
 var API = {}
 module.exports = API;
@@ -10,15 +10,14 @@ module.exports = API;
 (function () {
 	// Set up the PIXI renderer
 	var canvas = {width: 500, height: 300};
-	var renderer = new PIXI.WebGLRenderer   (
-												canvas.width,
-												canvas.height,
-												{
-													transparent : true,
-													antialias   : true,
-													resolution  : window.devicePixelRatio
-												}
-											);
+	var options = { transparent : true,
+	                antialias   : true,
+	                resolution  : window.devicePixelRatio
+	               };
+	var renderer = new PIXI.WebGLRenderer ( canvas.width,
+	                                        canvas.height,
+	                                        options
+	                                      );
 	document.getElementById('canvas-wrapper').appendChild(renderer.view);
 	renderer.view.style.width     = canvas.width;
 	renderer.view.style.height    = canvas.height;
@@ -72,7 +71,7 @@ module.exports = API;
 			}; // End conf
 		} // End if (shallowCopy)
 
-		return new HexCell(position, scale, color, conf);
+		return new OxCell(position, scale, color, conf);
 	};
 
 	// TODO: Paint an example icon.
@@ -216,7 +215,7 @@ module.exports = API;
 
 			var t = currentTime - startTime;
 
-			var x = HexMath.easeInOutQuad(t, startX, span, duration);
+			var x = OxMath.easeInOutQuad(t, startX, span, duration);
 			cell._graphics.position.x = x;
 
 			// Repeating function
@@ -274,7 +273,7 @@ module.exports = API;
 	var renderCallback = function () {
 		renderer.render(container);
 	}
-	var animationSystem = new HexAnimationSystem.AnimationSystem(renderCallback);
+	var animationSystem = new OxAnimationSystem.AnimationSystem(renderCallback);
 	// animationSystem.add(WiggleCellAnimationFactory(cell, 2000, 200));
 
 	// Kick-start the animation

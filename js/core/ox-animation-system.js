@@ -1,6 +1,6 @@
 // Define module HexAnimationSystem
 
-var HexUtil = require('./HexUtil.js');
+var OxUtil = require('./ox-util.js');
 
 module.exports = (function () {
 
@@ -8,7 +8,7 @@ module.exports = (function () {
     // =============================================
     function AnimationSystem (renderCallback) {
         this.prevTime = -1;
-        this.animList = new HexUtil.LinkedList();
+        this.animList = new OxUtil.LinkedList();
         this.renderCallback = renderCallback;
     };
     /*

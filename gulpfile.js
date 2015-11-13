@@ -18,12 +18,12 @@ var OUT = 'build/';
 gulp.task('build-core', function () {
 
 	var b = browserify({
-		entries: './js/core/HexCore.js',
+		entries: './js/core/ox-core.js',
 		debug : true,
 	});
 
 	return b.bundle()
-		.pipe( source('Ox.js') )
+		.pipe( source('ox-core.js') )
 		.pipe( gulp.dest(OUT) )
 		.pipe( streamify(uglify()) )
 		.pipe( rename({extname:'.min.js'}) )
@@ -33,15 +33,20 @@ gulp.task('build-core', function () {
 gulp.task('build-app', function () {
 
 	var b = browserify({
-		entries: './js/app.js',
+		entries: './js/ox-app.js',
 		debug : true,
 
 	});
 
 	return b.bundle()
-		.pipe( source('OxApp.js') )
+		.pipe( source('ox-app.js') )
+		.on("error", console.log)
 		.pipe( gulp.dest(OUT) )
+		.on("error", console.log)
 		.pipe( streamify(uglify()) )
+		.on("error", console.log)
 		.pipe( rename({extname:'.min.js'}) )
-		.pipe( gulp.dest(OUT) );
+		.on("error", console.log)
+		.pipe( gulp.dest(OUT) )
+		.on("error", console.log);
 });

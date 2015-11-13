@@ -1,4 +1,5 @@
 // Define module HexMath
+"use strict";
 
 module.exports = (function () {
 
@@ -32,20 +33,24 @@ module.exports = (function () {
     var sin_30 = 0.5;
     var tan_30 = 0.57735026919;
 
-	var hexPoints = [	-1      ,  0      ,
-                	    -cos_60 , -sin_60 , 
-                	     cos_60 , -sin_60 , 
-                	     1      ,  0      ,
-                	     cos_60 ,  sin_60 ,
-                	    -cos_60 ,  sin_60
-                	    ];
-	var hexShape  = new PIXI.Polygon(hexPoints);
+    var corners = {
+    	northEast : [-1      ,  0     ],
+    	east      : [-cos_60 , -sin_60],
+    	southEast : [ cos_60 , -sin_60],
+    	southWest : [ 1      ,  0     ],
+    	west      : [ cos_60 ,  sin_60],
+    	northWest : [-cos_60 ,  sin_60],
+    }
 
-	// Seriously!?
-	// var hexOutlinePoints = hexPoints.map( function(val){return val-0.5;} );
-	// var hexOutlineShape  = new PIXI.Polygon(hexOutlinePoints);
-	var hexOutlinePoints = hexPoints;
-	var hexOutlineShape  = hexShape;
+	var hexPoints = [].concat(
+			corners.northEast,
+			corners.east     ,
+			corners.southEast,
+			corners.southWest,
+			corners.west     ,
+			corners.northWest
+		);
+	var hexShape  = new PIXI.Polygon(hexPoints);
 
 	var hexEdge = {
 		north    : function(t) {return new PIXI.Polygon([-cos_60, -sin_60,  cos_60, -sin_60,  cos_60+t*cos_60, -sin_60+t*sin_60, -cos_60-t*cos_60, -sin_60+t*sin_60 ]);},
@@ -229,10 +234,11 @@ module.exports = (function () {
 		return hexagon(p0, 1, coordinateSystem);	
 	}
 
-	// === Easing functions ===
-	// ========================
+	// ========================================================================
+	// === Easing functions
+	// ========================================================================
 	// Courtesy of "http://gizma.com/easing"
-	// ========================
+	// 
 	function easeInOutQuad (t, x, dx, duration) {
 		t /= duration/2;
 		if (t < 1) return dx/2*t*t + x;
@@ -245,10 +251,12 @@ module.exports = (function () {
 		t--;
 		return dx/2 * ( -Math.pow( 2, -10 * t) + 2 ) + x;
 	};
-	// ===========================
-	// == END Easing functions ===
+	// ========================================================================
+	// == END Easing functions
 
-	// Exported API
+	// ========================================================================
+	// === Exported API
+	// ========================================================================
 	var API = {
 
 		direction: direction,
@@ -266,9 +274,7 @@ module.exports = (function () {
 		cos_60 : cos_60,
 		sin_60 : sin_60,
 		hexPoints        : hexPoints,
-		hexOutlinePoints : hexOutlinePoints,
 		hexShape         : hexShape,
-		hexOutlineShape  : hexOutlineShape,
 		hexEdge            : hexEdge,
 		hexRadialLineVertex: hexRadialLineVertex,
 		hexRadialLineSide  : hexRadialLineSide,

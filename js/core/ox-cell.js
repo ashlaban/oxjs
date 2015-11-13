@@ -1,8 +1,8 @@
-var HexMath = require('./HexMath')
+var OxMath = require('./ox-math.js')
 
 module.exports = (function () {
 
-    function HexCell( position, scale, color, conf) {
+    function Cell( position, scale, color, conf) {
         this._graphics = new PIXI.Graphics();
         this._graphics.position.x = position.x
         this._graphics.position.y = position.y
@@ -49,17 +49,17 @@ module.exports = (function () {
         this.isHighlighted = false;
     }
 
-    HexCell.prototype._pushColor = function (newColor) {
+    Cell.prototype._pushColor = function (newColor) {
         this._colorStack.push(this.color);
         this.color = newColor;
     }
-    HexCell.prototype._popColor = function () {
+    Cell.prototype._popColor = function () {
         if (this._colorStack) {
             this.color = this._colorStack.pop()
         }
     }
 
-    HexCell.prototype.highlight = function (doHighlight) {
+    Cell.prototype.highlight = function (doHighlight) {
         if (doHighlight === undefined) {
             this.isHighlighted = !this.isHighlighted;
         } else if (doHighlight) {
@@ -71,7 +71,7 @@ module.exports = (function () {
         // TODO: Signal dirty cell
     }
 
-    HexCell.prototype.draw = function () {
+    Cell.prototype.draw = function () {
         var color;
         if (this.isHighlighted) {
             color = HexColor.brighten(this.color);
@@ -82,7 +82,7 @@ module.exports = (function () {
         // Main hexagon
         this._graphics.clear(); // Important, otherwise mem-consumption will explode!
         this._graphics.beginFill(color);
-        this._graphics.drawShape(HexMath.hexShape);
+        this._graphics.drawShape(OxMath.hexShape);
         this._graphics.endFill();
 
         // Radial lines to vertecies
@@ -90,7 +90,7 @@ module.exports = (function () {
             this._graphics.beginFill(this.radialVertexLineColor);
             for (var i = this.radialVertexLines.length - 1; i >= 0; --i) {
                 var line      = this.radialVertexLines[i];
-                var edgeShape = HexMath.hexRadialLineVertex[line](this.radialVertexLineWidth);
+                var edgeShape = OxMath.hexRadialLineVertex[line](this.radialVertexLineWidth);
                 this._graphics.drawShape(edgeShape);
             };
             this._graphics.endFill();
@@ -101,7 +101,7 @@ module.exports = (function () {
             this._graphics.beginFill(this.radialSideLineColor);
             for (var i = this.radialSideLines.length - 1; i >= 0; --i) {
                 var line      = this.radialSideLines[i];
-                var edgeShape = HexMath.hexRadialLineSide[line](this.radialSideLineWidth);
+                var edgeShape = OxMath.hexRadialLineSide[line](this.radialSideLineWidth);
                 this._graphics.drawShape(edgeShape);
             };
             this._graphics.endFill();
@@ -112,7 +112,7 @@ module.exports = (function () {
             this._graphics.beginFill(this.edgeColor);
             for (var i = this.edges.length - 1; i >= 0; --i) {
                 var edge      = this.edges[i];
-                var edgeShape = HexMath.hexEdge[edge](this.edgeWidth);
+                var edgeShape = OxMath.hexEdge[edge](this.edgeWidth);
                 this._graphics.drawShape(edgeShape);
             };
             this._graphics.endFill();
@@ -121,16 +121,16 @@ module.exports = (function () {
         // Stroke
         if (this.stroke) {
             this._graphics.lineStyle( this.strokeWidth, this.strokeColor, 1 );
-            this._graphics.drawShape( HexMath.hexOutlineShape );
+            this._graphics.drawShape( OxMath.hexShape );
             this._graphics.lineStyle( this.strokeWidth, this.strokeColor, 0 );
         };
 
         // Text
     }
 
-    HexCell.prototype.renderWith = function ( renderer ) {
+    Cell.prototype.renderWith = function ( renderer ) {
         renderer.render(this._graphics);
     }
 
-    return HexCell;
+    return Cell;
 }());

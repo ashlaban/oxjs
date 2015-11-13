@@ -5,13 +5,13 @@
  * 	var Ox = require('./lib/oxCore.js');
  * 	Ox.Math.Whatever();
  */
-var OxAnimationSystem = require('./HexAnimationSystem.js');
-var OxCell            = require('./HexCell.js');
-var OxColor           = require('./HexColor.js');
-var OxCoordinate      = require('./HexCoordinate.js');
-var OxGrid            = require('./HexGrid.js');
-var OxMath            = require('./HexMath.js');
-var OxUtil            = require('./HexUtil.js');
+var OxAnimationSystem = require('./ox-animation-system.js');
+var OxCell            = require('./ox-cell.js');
+var OxColor           = require('./ox-color.js');
+var OxCoordinate      = require('./ox-coordinate.js');
+var OxGrid            = require('./ox-grid.js');
+var OxMath            = require('./ox-math.js');
+var OxUtil            = require('./ox-util.js');
 
 module.exports = (function () {
 	return {

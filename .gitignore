@@ -1,5 +1,6 @@
 # oxjs specific
 lib/
+build/
 
 # Node
 node_Modules/

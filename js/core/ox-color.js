@@ -1,6 +1,5 @@
 // Define module HexColor
-define(function () {
-
+module.exports = (function () {
     function isRGB(c) {
         return  (
                     c 
@@ -60,6 +59,9 @@ define(function () {
         };
     }
 
+    // ========================================================================
+    // === Conversions
+    // ========================================================================
     /**
      * Converts from the RGB color space to to HSV.
      * 
@@ -130,7 +132,12 @@ define(function () {
         }
         return RGBtoINT(HSVtoRGB(h, s, v));
     }
+    // ========================================================================
+    // === END Conversions
 
+    // ========================================================================
+    // === Palette
+    // ========================================================================
     /**
      * Class HexColor.HexPalette
      * @param {[type]} generatorFunction [description]
@@ -180,6 +187,8 @@ define(function () {
 
         return colors;
     }
+    // ========================================================================
+    // === END Palette
 
     function brighten(c) {
         var result;
@@ -240,7 +249,9 @@ define(function () {
         return result;
     }
 
-    // External API
+    // ========================================================================
+    // === Exported API
+    // ========================================================================
     var API = {};
 
     API.names = {

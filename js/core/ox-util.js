@@ -1,9 +1,12 @@
 // Define module HexUtil
 
+"use strict";
+
 module.exports = (function () {
 
+	// ========================================================================
 	// === Simple Linked List implementation ===
-	// =============================================
+	// ========================================================================
 	function LinkedList () {
 		this.first = null;
 		this.last  = null;
@@ -14,7 +17,7 @@ module.exports = (function () {
 
 		dataNode = new LinkedListNode(data);
 
-		if (this.length == 0) {
+		if (this.length === 0) {
 			this.first = dataNode;
 			this.last  = dataNode;
 		} else {
@@ -22,7 +25,7 @@ module.exports = (function () {
 			if (insertAfterNode.next !== null) {
 				insertAfterNode.next.prev = dataNode;
 			}
-			insertAfterNode.next = data
+			insertAfterNode.next = data;
 		}
 
 		if (index === this.length-1) {
@@ -31,11 +34,11 @@ module.exports = (function () {
 
 		this.length += 1;
 		return;
-	}
+	};
 
 	LinkedList.prototype.remove = function (index) {
 		return this.removeElement(this.getNode(index));
-	}
+	};
 
 	LinkedList.prototype.removeElement = function (node) {
 		var removeNode;
@@ -71,11 +74,11 @@ module.exports = (function () {
 
 		this.length -= 1;
 		return removeNode.data;
-	}
+	};
 
 	LinkedList.prototype.get = function (index) {
 		return this.getNode(index).data;
-	}
+	};
 
 	LinkedList.prototype.getNode = function (index) {
 		var length, searchIndex, searchNode;
@@ -99,9 +102,9 @@ module.exports = (function () {
 			}
 		}
 		return searchNode;
-	}
+	};
 
-	LinkedList.prototype.peek   = function () {}
+	LinkedList.prototype.peek   = function () {};
 	
 	LinkedList.prototype.pop    = function () {
 		var node;
@@ -120,7 +123,7 @@ module.exports = (function () {
 
 		this.length -= 1;
 		return node.data;
-	}
+	};
 	
 	LinkedList.prototype.push = function (data) {
 		var node;
@@ -138,11 +141,9 @@ module.exports = (function () {
 
 		this.length += 1;
 		return;
-	}
+	};
 
-	// LinkedList.prototype.iterator = function* (){
-		
-	// }
+	// LinkedList.prototype.iterator = function* () {};
 
 	function LinkedListNode (data) {
 		this.next = null;
@@ -150,18 +151,59 @@ module.exports = (function () {
 
 		this.data = data;
 	}
-	// LinkedListNode.prototype.next = function () {
-	// 	return this.next;
-	// }
-	// LinkedListNode.prototype.prev = function () {
-	// 	return this.prev;
-	// }
-	// =============================================
-	// === END Simple Linked List implementation ===
+	// ========================================================================
+	// === END Simple Linked List implementation
 
-	// External API
+	// ========================================================================
+	// === Hash set for coordinates
+	// ========================================================================	
+	function CoordinateSet () {
+		this.hash = Object.create(null);
+	}
+
+	CoordinateSet.prototype.add = function ( x, y, z ) {
+		var hash;
+
+		hash = this.hash;
+		hash = hash[x];
+		if (hash === undefined) {
+			this.hash[x] = Object.create(null);
+			hash = this.hash[x];
+		}
+
+		hash = hash[y];
+		if (hash === undefined) {
+			this.hash[x][y] = Object.create(null);
+			hash = this.hash[x][y];
+		}
+
+		hash[z] = true;
+	};
+	CoordinateSet.prototype.remove = function (x, y, z) {
+		var hash;
+		hash = this.hash[x];
+		if (hash === undefined) {return;}
+		hash = this.hash[y];
+		if (hash === undefined) {return;}
+		hash = this.hash[z];
+		hash[z] = false;
+	};
+	CoordinateSet.prototype.in = function (x, y, z) {
+		var hash = this.hash;
+		hash = hash[x];
+		hash = hash && hash[y];
+		hash = hash && hash[z];
+		return hash;
+	};
+	// ========================================================================
+	// === END Hash set for coordinates
+
+	// ========================================================================
+	// === Exported API
+	// ========================================================================
 	var API = {
 		LinkedList: LinkedList,
+		CoordinateSet: CoordinateSet
 	};
 	return API;
 }());
