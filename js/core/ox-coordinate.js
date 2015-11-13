@@ -1,5 +1,7 @@
-// Define module HexCoordinate
-"use strict";
+// Define module OxCoordinate
+'use strict';
+
+/* jshint browserify: true */
 
 module.exports = (function () {
     // ========================================================================
@@ -48,12 +50,12 @@ module.exports = (function () {
             var cubeCoord   = self.pixel.toCubeCoordinates(pixelCoord);
             var offsetCoord = self.cube.toOffsetCoordinates(cubeCoord);
             return offsetCoord;
-        }
+        };
         self.pixel.toCubeCoordinates = function (pixelCoord) {
             var axialCoord = self.pixel.toAxialCoordinates(pixelCoord);
             var cubeCoord  = self.axial.toCubeCoordinates(axialCoord);
             return cubeCoord;
-        }
+        };
         self.pixel.toAxialCoordinates = function (pixelCoord) {
             pixelCoord.x -= self.originPixel.x;
             pixelCoord.y -= self.originPixel.y;
@@ -61,71 +63,68 @@ module.exports = (function () {
             var r = (-pixelCoord.x / 3 + Math.sqrt(3)/3 * pixelCoord.y) / self.scale.y;
             var axialCoord = {q:q,r:r};
             return self.axialRound( axialCoord );
-        }
+        };
         self.pixel.toLinearCoordinates = function (pixelCoord) {
             var offsetCoord = self.pixel.toOffsetCoordinates(pixelCoord);
             var linearCoord = self.offset.toLinearCoordinates(offsetCoord);
             return linearCoord;
-        }
+        };
 
         self.offset.toPixelCoordinates = function (offsetCoord) {
             var cubeCoord  = self.offset.toCubeCoordinates(offsetCoord);
             var pixelCoord = self.cube.toPixelCoordinates(cubeCoord);
             return pixelCoord;
-        }
+        };
         self.offset.toCubeCoordinates = function (offsetCoord) {
             var x = offsetCoord.i;
             var z = offsetCoord.j - (offsetCoord.i + (offsetCoord.i&1)) / 2;
             var y = -x-z;
-            cubeCoord = {x:x,y:y,z:z};
+            var cubeCoord = {x:x,y:y,z:z};
             return cubeCoord;
-        }
+        };
         self.offset.toAxialCoordinates = function (offsetCoord) {
             var cubeCoord  = self.offset.toCubeCoordinates(offsetCoord);
             var axialCoord = self.cube.toAxialCoordinates(cubeCoord);
             return axialCoord;
-        }
+        };
         self.offset.toLinearCoordinates = function (offsetCoord) {
             return offsetCoord.i + (offsetCoord.j * self.size.w);
-        }
+        };
         self.offset.inBounds = function (offsetCoord) {
-            return  (   (
-                                offsetCoord.i >= 0
-                            &&  offsetCoord.i  < self.size.w
-                        )
-                        &&
-                        (
-                                offsetCoord.j >= 0
-                            &&  offsetCoord.j  < self.size.h
-                        ));
-        }
+            return (
+                (offsetCoord.i >= 0 && 
+                offsetCoord.i  < self.size.w) &&
+                (offsetCoord.j >= 0 &&
+                offsetCoord.j  < self.size.h)
+                );
+        };
 
         self.cube.toPixelCoordinates = function (cubeCoord) {
             var axialCoord = self.cube.toAxialCoordinates(cubeCoord);
             var pixelCoord = self.axial.toPixelCoordinates(axialCoord);
             return pixelCoord;
-        }
+        };
         self.cube.toOffsetCoordinates = function (cubeCoord) {
             var i = cubeCoord.x;
             var j = cubeCoord.z + (cubeCoord.x + (cubeCoord.x&1)) / 2;
             var offsetCoord = {i:i,j:j};
             return offsetCoord;
-        }
+        };
         self.cube.toAxialCoordinates = function (cubeCoord) {
             var q = cubeCoord.x;
             var r = cubeCoord.z;
             var axialCoord = {q:q,r:r};
             return axialCoord;
-        }
+        };
         self.cube.toLinearCoordinates = function (cubeCoord) {
             var offsetCoord = self.cube.toOffsetCoordinates(cubeCoord);
             var linearCoord = self.offset.toLinearCoordinates(offsetCoord);
             return linearCoord;
-        }
+        };
         self.cube.inBounds = function (cubeCoord) {
             var offsetCoord = self.cube.toOffsetCoordinates(cubeCoord);
             return self.offset.inBounds(offsetCoord);
-        }
+        };
 
         self.axial.toPixelCoordinates = function (axialCoord) {
             var x = self.scale.x * 3/2 * axialCoord.q;
@@ -135,48 +134,48 @@ module.exports = (function () {
                 y:y + self.originPixel.y,
             };
             return pixelCoord;
-        }
+        };
         self.axial.toOffsetCoordinates = function (axialCoord) {
             var cubeCoord = self.axial.toCubeCoordinates(cubeCoord);
             var offsetCoord = self.cube.toOffsetCoordinates(axialCoord);
             return offsetCoord;
-        }
+        };
         self.axial.toCubeCoordinates = function (axialCoord) {
             var x = axialCoord.q;
             var z = axialCoord.r;
-            var y = -x-z
+            var y = -x-z;
             return {x:x,y:y,z:z};
-        }
+        };
         self.axial.toLinearCoordinates = function (axialCoord) {
             var offsetCoord = self.axial.toOffsetCoordinates(axialCoord);
             var linearCoord = self.offset.toLinearCoordinates(offsetCoord);
             return linearCoord;
-        }
+        };
 
         self.linear.toPixelCoordinates  = function (linearCoord) {
             var offsetCoord = self.linear.toOffsetCoordinates(linearCoord);
             var pixelCoord  = self.offset.toPixelCoordinates(offsetCoord);
             return pixelCoord;
-        }
+        };
         self.linear.toOffsetCoordinates = function (linearCoord) {
             var i = linearCoord % self.size.w;
             var j = linearCoord / self.size.w;
             return {i:i,j:j};
-        }
+        };
         self.linear.toCubeCoordinates   = function (linearCoord) {
             var offsetCoord = self.linear.toOffsetCoordinates(linearCoord);
             var cubeCoord   = self.offset.toCubeCoordinates(offsetCoord);
             return cubeCoord;
-        }
+        };
         self.linear.toAxialCoordinates  = function (linearCoord) {
             var offsetCoord = self.linear.toOffsetCoordinates(linearCoord);
             var axialCoord  = self.offset.toAxialCoordinates(offsetCoord);
             return axialCoord;
-        }
+        };
         self.linear.inBounds            = function (linearCoord) {
             var offsetCoord = self.linear.toOffsetCoordinates(linearCoord);
-            return self.offset.inBounds();
-        }
+            return self.offset.inBounds(offsetCoord);
+        };
     }
 
     // ========================================================================
@@ -202,7 +201,7 @@ module.exports = (function () {
         }
 
         return {x:rx, y:ry, z:rz};
-    }
+    };
 
     System.prototype.axialRound = function (axialCoord) {
         // From amit
@@ -211,30 +210,30 @@ module.exports = (function () {
         cubeCoord  = this.cubeRound(cubeCoord);
         axialCoord = this.cube.toAxialCoordinates(cubeCoord);
         return axialCoord;
-    }
+    };
 
     function isPixelCoordinates(c) {
-        return c 
-                && c.x !== undefined
-                && c.y !== undefined
-                && c.z === undefined;
+        return c &&
+            c.x !== undefined &&
+            c.y !== undefined &&
+            c.z === undefined;
     }
     function isOffsetCoordinates(c) {
-        return c 
-                && c.i !== undefined
-                && c.j !== undefined;
+        return c && 
+            c.i !== undefined &&
+            c.j !== undefined;
     }
     function isCubeCoordinates(c) {
-        return c 
-                && c.x !== undefined
-                && c.y !== undefined
-                && c.z !== undefined;
+        return c &&
+            c.x !== undefined &&
+            c.y !== undefined &&
+            c.z !== undefined;
 
     }
     function isAxialCoordinates(c) {
-        return c
-                && c.q !== undefined
-                && c.r !== undefined;
+        return c && 
+            c.q !== undefined &&
+            c.r !== undefined;
     }
     function isLinearCoordinates(c) {
         return Number.isInteger(c);
@@ -252,7 +251,7 @@ module.exports = (function () {
         } else if (isLinearCoordinates( c )) {
             return this.linear.toPixelCoordinates(c);
         }
-    }
+    };
     /**
      * Converts the current coordinate object to offset coordinates.
      * @param  {pixel|offset|cube|axial} c coordinates given in any of the four coordinate types.
@@ -270,7 +269,7 @@ module.exports = (function () {
         } else if (isLinearCoordinates( c )) {
             return this.linear.toOffsetCoordinates(c);
         }
-    }
+    };
     System.prototype.toCubeCoordinates = function (c) {
         if        (isPixelCoordinates(  c )) {
             return this.pixel.toCubeCoordinates(c);
@@ -284,7 +283,7 @@ module.exports = (function () {
          else if (isLinearCoordinates( c )) {
             return this.linear.toCubeCoordinates(c);
         }
-    }
+    };
     System.prototype.toAxialCoordinates = function (c) {
         if        (isPixelCoordinates(  c )) {
             return this.pixel.toAxialCoordinates(c);
@@ -297,7 +296,7 @@ module.exports = (function () {
         } else if (isLinearCoordinates( c )) {
             return this.linear.toAxialCoordinates(c);
         }
-    }
+    };
     System.prototype.toLinearCoordinates = function (c) {
         if        (isPixelCoordinates(  c )) {
             return this.pixel.toLinearCoordinates(c);
@@ -310,14 +309,14 @@ module.exports = (function () {
         } else if (isLinearCoordinates( c )) {
             return c;
         }
-    }
+    };
 
     // ========================================================================
     // === Exported API
     // ========================================================================
     var API = {
         System: System,
-    }
+    };
 
     return API;
 

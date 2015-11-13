@@ -1,4 +1,7 @@
-// Define module HexAnimationSystem
+// Define module OxAnimationSystem
+'use strict';
+
+/* jshint browserify: true */
 
 var OxUtil = require('./ox-util.js');
 
@@ -10,7 +13,8 @@ module.exports = (function () {
         this.prevTime = -1;
         this.animList = new OxUtil.LinkedList();
         this.renderCallback = renderCallback;
-    };
+    }
+
     /*
      * callback(dt, currentTime)
      *     A function providing the acutal animation.
@@ -104,7 +108,8 @@ module.exports = (function () {
      */ 
     function Animation (callback) {
         this.callback = callback;
-    };
+    }
+    
     Animation.prototype.update = function (dt, currentTime) {
         return this.callback.call(this, dt, currentTime);
     };

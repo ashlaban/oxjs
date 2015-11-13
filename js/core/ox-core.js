@@ -5,6 +5,10 @@
  * 	var Ox = require('./lib/oxCore.js');
  * 	Ox.Math.Whatever();
  */
+
+/* jshint browserify: true */
+'use strict';
+
 var OxAnimationSystem = require('./ox-animation-system.js');
 var OxCell            = require('./ox-cell.js');
 var OxColor           = require('./ox-color.js');
@@ -22,5 +26,5 @@ module.exports = (function () {
 		Grid            : OxGrid,
 		Math            : OxMath,
 		Util            : OxUtil,
-	}
+	};
 }());

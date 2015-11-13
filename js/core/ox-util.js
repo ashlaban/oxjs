@@ -1,9 +1,9 @@
 // Define module HexUtil
+'use strict';
 
-"use strict";
+/* jshint browserify: true */
 
 module.exports = (function () {
-
 	// ========================================================================
 	// === Simple Linked List implementation ===
 	// ========================================================================

@@ -1,44 +1,44 @@
-// Define module Grid
-"use strict";
+// Define module OxGrid
+'use strict';
+
+/* globals PIXI */
+/* jshint browserify: true */
 
 var OxCell       = require('./ox-cell.js');
 var OxCoordinate = require('./ox-coordinate.js');
 
 module.exports = (function () {
-
     function Grid( conf, model ) {
-
-        var self = this;
 
         // ========================================================================
         // === Constructor       ==================================================
         // ========================================================================
-        self.conf = conf;
+        this.conf = conf;
 
-        self._graphics = new PIXI.Graphics()
-        self.position  = conf.position;
-        self._graphics.scale.x = conf.scale.x;
-        self._graphics.scale.y = conf.scale.y;
+        this._graphics = new PIXI.Graphics();
+        this.position  = conf.position;
+        this._graphics.scale.x = conf.scale.x;
+        this._graphics.scale.y = conf.scale.y;
 
-        self.scale = conf.scale;
-        self.size  = conf.size;
+        this.scale = conf.scale;
+        this.size  = conf.size;
 
-        self.coordinateSystem = new OxCoordinate.System(self.size, self.scale, self.position);
+        this.coordinateSystem = new OxCoordinate.System(this.size, this.scale, this.position);
 
-        self.cells = []
-        for (var iy = 0; iy < self.size.h; ++iy) {
-            for (var ix = 0; ix < self.size.w; ++ix) {
+        this.cells = [];
+        for (var iy = 0; iy < this.size.h; ++iy) {
+            for (var ix = 0; ix < this.size.w; ++ix) {
 
-                var cellPixelCoord  = self.coordinateSystem.offset.toPixelCoordinates(  {i:ix, j:iy} );
-                var cellLinearCoord = self.coordinateSystem.offset.toLinearCoordinates( {i:ix, j:iy} );
+                var cellPixelCoord  = this.coordinateSystem.offset.toPixelCoordinates(  {i:ix, j:iy} );
+                var cellLinearCoord = this.coordinateSystem.offset.toLinearCoordinates( {i:ix, j:iy} );
                 var color = (model!==null) ? model[cellLinearCoord].color : (0xffffff);
                 var cell     = new OxCell(     cellPixelCoord,
-                                                self.scale,
+                                                this.scale,
                                                 color,
                                                 conf.cell
                                             );
-                self._graphics.addChild(cell._graphics)
-                self.cells.push(cell)
+                this._graphics.addChild(cell._graphics);
+                this.cells.push(cell);
             }
         }
     }
@@ -51,16 +51,9 @@ module.exports = (function () {
      * @return {[type]}     [description]
      */
     Grid.prototype.applyToCells = function ( callback ) {
-        var grid            ,
-            coordinateSystem,
-            offsetCoord     ,
+        var offsetCoord     ,
             linearCoord     ,
             cell            ;
-
-            
-
-        // grid             = this;
-        // coordinateSystem = this.coordinateSystem;
 
         for (var i = 0; i < this.conf.size.w; ++i) {
             for (var j = 0; j < this.conf.size.h; ++j) {
@@ -72,19 +65,19 @@ module.exports = (function () {
 
             }
         }
-    }
+    };
 
     Grid.prototype.draw = function () {
         // TODO: clear first
         for (var key in this.cells) {
             var obj = this.cells[key];
-            obj.draw()
+            obj.draw();
         }
-    }
+    };
 
     Grid.prototype.drawCell = function ( cell ) {
-        cell.draw()
-    }
+        cell.draw();
+    };
 
     Grid.prototype.getCell = function ( coordinate ) {
         var offsetCoord = this.coordinateSystem.toOffsetCoordinates(coordinate);
@@ -99,15 +92,15 @@ module.exports = (function () {
         }
 
         return null;
-    }
+    };
 
     Grid.prototype.renderWith = function ( renderer ) {
         renderer.render(this._graphics);
-    }
+    };
 
     Grid.prototype.highlightCells = function () {
 
-    }
+    };
 
     return Grid;
 }());

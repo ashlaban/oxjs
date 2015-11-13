@@ -1,11 +1,18 @@
-var OxMath = require('./ox-math.js')
+// Define module OxCell
+'use strict';
+
+/* jshint browserify: true */
+/* globals PIXI */
+
+var OxMath  = require('./ox-math.js');
+var OxColor = require('./ox-color.js');
 
 module.exports = (function () {
 
     function Cell( position, scale, color, conf) {
         this._graphics = new PIXI.Graphics();
-        this._graphics.position.x = position.x
-        this._graphics.position.y = position.y
+        this._graphics.position.x = position.x;
+        this._graphics.position.y = position.y;
         this._graphics.scale.x = scale.x;
         this._graphics.scale.y = scale.y;
         this.color = color;
@@ -52,12 +59,12 @@ module.exports = (function () {
     Cell.prototype._pushColor = function (newColor) {
         this._colorStack.push(this.color);
         this.color = newColor;
-    }
+    };
     Cell.prototype._popColor = function () {
         if (this._colorStack) {
-            this.color = this._colorStack.pop()
+            this.color = this._colorStack.pop();
         }
-    }
+    };
 
     Cell.prototype.highlight = function (doHighlight) {
         if (doHighlight === undefined) {
@@ -67,14 +74,19 @@ module.exports = (function () {
         } else {
             this.isHighlighted = false;
         }
-        this.draw()
+        this.draw();
         // TODO: Signal dirty cell
-    }
+    };
 
     Cell.prototype.draw = function () {
-        var color;
+        var color,
+            line,
+            iLine,
+            edge,
+            edgeShape,
+            iEdge;
         if (this.isHighlighted) {
-            color = HexColor.brighten(this.color);
+            color = OxColor.brighten(this.color);
         } else {
             color = this.color;
         }
@@ -88,33 +100,33 @@ module.exports = (function () {
         // Radial lines to vertecies
         if (this.radialVertexLines.length) {
             this._graphics.beginFill(this.radialVertexLineColor);
-            for (var i = this.radialVertexLines.length - 1; i >= 0; --i) {
-                var line      = this.radialVertexLines[i];
-                var edgeShape = OxMath.hexRadialLineVertex[line](this.radialVertexLineWidth);
+            for (iLine = this.radialVertexLines.length - 1; iLine >= 0; --iLine) {
+                line      = this.radialVertexLines[iLine];
+                edgeShape = OxMath.hexRadialLineVertex[line](this.radialVertexLineWidth);
                 this._graphics.drawShape(edgeShape);
-            };
+            }
             this._graphics.endFill();
         }
 
         // Radial lines to sides
         if (this.radialSideLines.length) {
             this._graphics.beginFill(this.radialSideLineColor);
-            for (var i = this.radialSideLines.length - 1; i >= 0; --i) {
-                var line      = this.radialSideLines[i];
-                var edgeShape = OxMath.hexRadialLineSide[line](this.radialSideLineWidth);
+            for (iLine = this.radialSideLines.length - 1; iLine >= 0; --iLine) {
+                line      = this.radialSideLines[iLine];
+                edgeShape = OxMath.hexRadialLineSide[line](this.radialSideLineWidth);
                 this._graphics.drawShape(edgeShape);
-            };
+            }
             this._graphics.endFill();
         }
 
         // Specific edges
         if (this.edges.length) {
             this._graphics.beginFill(this.edgeColor);
-            for (var i = this.edges.length - 1; i >= 0; --i) {
-                var edge      = this.edges[i];
-                var edgeShape = OxMath.hexEdge[edge](this.edgeWidth);
+            for (iEdge = this.edges.length - 1; iEdge >= 0; --iEdge) {
+                edge      = this.edges[iEdge];
+                edgeShape = OxMath.hexEdge[edge](this.edgeWidth);
                 this._graphics.drawShape(edgeShape);
-            };
+            }
             this._graphics.endFill();
         }
 
@@ -123,14 +135,14 @@ module.exports = (function () {
             this._graphics.lineStyle( this.strokeWidth, this.strokeColor, 1 );
             this._graphics.drawShape( OxMath.hexShape );
             this._graphics.lineStyle( this.strokeWidth, this.strokeColor, 0 );
-        };
+        }
 
         // Text
-    }
+    };
 
     Cell.prototype.renderWith = function ( renderer ) {
         renderer.render(this._graphics);
-    }
+    };
 
     return Cell;
 }());

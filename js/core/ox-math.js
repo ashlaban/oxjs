@@ -1,5 +1,8 @@
-// Define module HexMath
-"use strict";
+// Define module OxMath
+'use strict';
+
+/* globals PIXI */
+/* jshint browserify: true */
 
 module.exports = (function () {
 
@@ -11,7 +14,7 @@ module.exports = (function () {
 		southWest: {x:-1, y: 0, z: 1},
 		northWest: {x:-1, y: 1, z: 0},
 		nil      : {x:0, y:0, z:0}
-	}
+	};
 	direction.asArray = [ 	direction.north,
 							direction.northEast,
 							direction.southEast,
@@ -25,13 +28,14 @@ module.exports = (function () {
 		south    : 3,
 		southWest: 4,
 		northWest: 5,
-	}
+	};
 	
+	var cos_30 = 0.86602540378;
 	var cos_60 = 0.5;
+	var sin_30 = 0.5;
     var sin_60 = 0.86602540378;
-    var cos_30 = 0.86602540378;
-    var sin_30 = 0.5;
     var tan_30 = 0.57735026919;
+    var tan_60 = 1.73205080757;
 
     var corners = {
     	northEast : [-1      ,  0     ],
@@ -40,7 +44,7 @@ module.exports = (function () {
     	southWest : [ 1      ,  0     ],
     	west      : [ cos_60 ,  sin_60],
     	northWest : [-cos_60 ,  sin_60],
-    }
+    };
 
 	var hexPoints = [].concat(
 			corners.northEast,
@@ -59,7 +63,7 @@ module.exports = (function () {
 		south    : function(t) {return new PIXI.Polygon([ cos_60,  sin_60, -cos_60,  sin_60, -cos_60-t*cos_60,  sin_60-t*sin_60,  cos_60+t*cos_60,  sin_60-t*sin_60 ]);},
 		southWest: function(t) {return new PIXI.Polygon([-cos_60,  sin_60,      -1,       0,      -1+t*cos_60,       0-t*sin_60, -cos_60+t       ,  sin_60          ]);},
 		northWest: function(t) {return new PIXI.Polygon([     -1,       0, -cos_60, -sin_60, -cos_60+t       , -sin_60         ,      -1+t*cos_60,       0+t*sin_60 ]);},
-	}
+	};
 	hexEdge[0] = hexEdge.north;
 	hexEdge[1] = hexEdge.northEast;
 	hexEdge[2] = hexEdge.southEast;
@@ -75,7 +79,8 @@ module.exports = (function () {
 		southEast: function(t) {return new PIXI.Polygon([ cos_60*(1+t) ,  sin_60*(1-t),  cos_60,  sin_60,  cos_60-t      ,  sin_60      , -t           , 0       , -t*cos_60,-t*sin_60,  t*cos_60  , -t*sin_60 ]);},
 		south    : function(t) {return new PIXI.Polygon([-cos_60*(t+1) ,  sin_60*(1-t), -cos_60,  sin_60,  (2*t-1)*cos_60,  sin_60      ,  2*t*cos_60  , 0       , t*cos_60 ,-t*sin_60, -t*cos_60  , -t*sin_60 ]);},
 		southWest: function(t) {return new PIXI.Polygon([-1+t*cos_60   , -sin_60*t    , -1     ,       0, -1+t*cos_60    ,  sin_60*t    ,  t*cos_60    , sin_60*t, t        , 0       ,  t*cos_60  , -sin_60*t ]);},
-		northWest: function(t) {return new PIXI.Polygon([-cos_60+t     , -sin_60      , -cos_60, -sin_60, -(t+1)*cos_60  ,  (t-1)*sin_60, -t*cos_60    , sin_60*t, t*cos_60 , sin_60*t,  t         ,  0        ]);}, }
+		northWest: function(t) {return new PIXI.Polygon([-cos_60+t     , -sin_60      , -cos_60, -sin_60, -(t+1)*cos_60  ,  (t-1)*sin_60, -t*cos_60    , sin_60*t, t*cos_60 , sin_60*t,  t         ,  0        ]);},
+	};
 	hexRadialLineVertex[0] = hexRadialLineVertex.north;
 	hexRadialLineVertex[1] = hexRadialLineVertex.northEast;
 	hexRadialLineVertex[2] = hexRadialLineVertex.southEast;
@@ -137,7 +142,7 @@ module.exports = (function () {
 		     cos_60/2*t    ,  sin_60/2*t,
 		    -cos_60/2*t    ,  sin_60/2*t,
 		    ]);},
-	}
+	};
 		
 	hexRadialLineSide[0] = hexRadialLineSide.north;
 	hexRadialLineSide[1] = hexRadialLineSide.northEast;
@@ -154,11 +159,11 @@ module.exports = (function () {
 
 		for (var i = 0; i < direction.asArray.length; ++i) {
 			var dir = direction.asArray[i];
-			if 	(      d.x === dir.x
-					&& d.y === dir.y
-					&& d.z === dir.z)
+			if 	( d.x === dir.x &&
+				  d.y === dir.y &&
+				  d.z === dir.z)
 			{ return i; }
-		};
+		}
 		return -1;
 	}
 
@@ -180,7 +185,7 @@ module.exports = (function () {
 
 		if (r === 0) {return [p0];}
 
-    	var results = []
+    	var results = [];
     	var dir = direction.southWest;
     	var cube = {x:p0.x + r*dir.x, y:p0.y + r*dir.y, z:p0.z + r*dir.z};
 	    for (var i = 0; i < 6; ++i) {
@@ -188,7 +193,7 @@ module.exports = (function () {
 	        for (var j = 0; j < r; ++j) {
 	            if (coordinateSystem.cube.inBounds(cube)) { results.push(cube); }
 	            // results.push(cube);
-	            cube = {x:cube.x + dir.x, y:cube.y + dir.y, z:cube.z + dir.z,}
+	            cube = {x:cube.x + dir.x, y:cube.y + dir.y, z:cube.z + dir.z,};
 	        }
 	    }
 
@@ -200,18 +205,18 @@ module.exports = (function () {
 
 	    var results = [p0];
     	for (var i = 1; i <= r; ++i) {
-    		results.concat(hexagon(p0, i, coordinateSystem))
-    	};
-    	return results
+    		results.concat(hexagon(p0, i, coordinateSystem));
+    	}
+    	return results;
 	}
 
 	function hexagonDisc(p0, r, coordinateSystem) {
 		p0 = coordinateSystem._toCubeCoordinates(p0);
 
-		var results = []
+		var results = [];
 		for (var dx = -r; dx <= r; ++dx) {
 			for (var dy = Math.max(-r, -dx-r); dy <= Math.min(r, -dx+r); ++dy) {
-			    var dz = -dx-dy
+			    var dz = -dx-dy;
 				var p = { x:p0.x+dx, y:p0.y+dy, z:p0.z+dz };
 			    results.push(p);
 			}
@@ -244,13 +249,13 @@ module.exports = (function () {
 		if (t < 1) return dx/2*t*t + x;
 		t--;
 		return -dx/2 * (t*(t-2) - 1) + x;
-	};
+	}
 	function easeInOutExp (t, x, dx, duration) {
 		t /= duration/2;
 		if (t < 1) return dx/2 * Math.pow( 2, 10 * (t - 1) ) + x;
 		t--;
 		return dx/2 * ( -Math.pow( 2, -10 * t) + 2 ) + x;
-	};
+	}
 	// ========================================================================
 	// == END Easing functions
 
@@ -271,8 +276,13 @@ module.exports = (function () {
 		getNeighbour : getNeighbour,
 		getNeighbours: getNeighbours,
 
+		cos_30 : cos_30,
 		cos_60 : cos_60,
+		sin_30 : sin_30,
 		sin_60 : sin_60,
+		tan_30 : tan_30,
+		tan_60 : tan_60,
+
 		hexPoints        : hexPoints,
 		hexShape         : hexShape,
 		hexEdge            : hexEdge,

@@ -1,11 +1,17 @@
-"use strict";
+'use strict';
+
+/* global PIXI */
+/* global MersenneTwister */
+/* global Hammer */
+
+/* jshint browserify: true */
+/* jshint browser   : true */
+/* global performance */
+/* jshint devel   : true */
 
 var OxCell = require('./core/ox-cell.js');
 var OxMath = require('./core/ox-math.js');
 var OxAnimationSystem = require('./core/ox-animation-system.js');
-
-var API = {}
-module.exports = API;
 
 (function () {
 	// Set up the PIXI renderer
@@ -36,20 +42,25 @@ module.exports = API;
 	}
 
 	CellFactory.prototype.newCell = function(shallowCopy) {
+		var position,
+			scale,
+			color,
+			conf;
+
 		if (shallowCopy) {
-			var position = this.position;    
-			var scale = this.scale;
-			var color = this.color;
-			var conf = this.conf;
+			position = this.position;    
+			scale = this.scale;
+			color = this.color;
+			conf = this.conf;
 		} else {
-			// var position = this.position.clone()
-			var position = {x: this.position.x, y:this.position.y};
-			// var scale = this.scale.clone()
-			var scale = {x: this.scale.x, y:this.scale.y};
-			// var color = this.color.clone()
-			var color = this.color;
-			// var conf = this.conf.clone()
-			var conf = {
+			// position = this.position.clone()
+			position = {x: this.position.x, y:this.position.y};
+			// scale = this.scale.clone()
+			scale = {x: this.scale.x, y:this.scale.y};
+			// color = this.color.clone()
+			color = this.color;
+			// conf = this.conf.clone()
+			conf = {
 				stroke: {
 					color:this.conf.stroke.color,
 					width:this.conf.stroke.width
@@ -88,10 +99,10 @@ module.exports = API;
 				   };
 	var cellFactory = new CellFactory(position, scale, color, conf);
 	var cell  = cellFactory.newCell();
-	cellFactory.color = 0x605989
-	var cell2 = cellFactory.newCell();
-	cellFactory.color = 0x6900A9
-	var cell3 = cellFactory.newCell();
+	// cellFactory.color = 0x605989;
+	// var cell2 = cellFactory.newCell();
+	// cellFactory.color = 0x6900A9;
+	// var cell3 = cellFactory.newCell();
 
 
 	cell.edges             = [];
@@ -127,13 +138,13 @@ module.exports = API;
 			var u1 = mt_rng.rnd();
 			var u2 = mt_rng.rnd();
 			var z0 = Math.sqrt(-2.0*Math.log(u1))*Math.cos(6.28318530718*u2);
-			var z1 = Math.sqrt(-2.0*Math.log(u1))*Math.sin(6.28318530718*u2);
+			// var z1 = Math.sqrt(-2.0*Math.log(u1))*Math.sin(6.28318530718*u2);
 
 			return z0*deviation + mean;
 		}
 
 		function randomInt(min, max) {
-			return min + Math.floor(mt_rng.rndHiRes()*(max-min+1))
+			return min + Math.floor(mt_rng.rndHiRes()*(max-min+1));
 		}
 		function randomArray(min, max, nElem) { 
 			var a = [];
@@ -141,9 +152,9 @@ module.exports = API;
 				var n = randomInt(min, max);
 				for (var i = a.length - 1; i >= 0; i--) {
 					if (a[i]==n) {continue;}
-				};
+				}
 				a.push(n);
-			};
+			}
 			return a;
 		}
 
@@ -247,7 +258,7 @@ module.exports = API;
 				return;
 			} else {
 				// TODO: Abstract with chaining.                
-				endingAnimation = WiggleCellAnimationFactory(cell, duration, 250);
+				endingAnimation = new WiggleCellAnimationFactory(cell, duration, 250);
 				isEnding = true;
 				return;
 			}
@@ -255,24 +266,24 @@ module.exports = API;
 
 		var x  = cell._graphics.position.x;
 		var dx = 0;
-		this.setdx = function (newdx) {dx = newdx;}
+		this.setdx = function (newdx) {dx = newdx;};
 
 		this.animation = function (dt, currentTime) {
 			// console.log(cell._graphics.position.x);
 			if (isDone) return isDone;
 			// TODO: Add starting phase?
 			if (isEnding) {
-				return endingAnimation(dt, currentTime)
+				return endingAnimation(dt, currentTime);
 			} else {
 				cell._graphics.position.x = x + dx;
 				return isDone;
-			};
+			}
 		};
 	}
 
 	var renderCallback = function () {
 		renderer.render(container);
-	}
+	};
 	var animationSystem = new OxAnimationSystem.AnimationSystem(renderCallback);
 	// animationSystem.add(WiggleCellAnimationFactory(cell, 2000, 200));
 
@@ -285,13 +296,13 @@ module.exports = API;
 		threshold: 10,
 		direction: Hammer.DIRECTION_HORIZONTAL,
 		velocity : 0.55,
-	}
+	};
 	var swipe = new Hammer.Swipe(swipeOptions);
 
 	var panOptions = {
 		threshold: 1,
 		direction: Hammer.DIRECTION_HORIZONTAL,
-	}
+	};
 	var pan = new Hammer.Pan(panOptions);
 
 	swipe.recognizeWith(pan);
@@ -304,10 +315,10 @@ module.exports = API;
 
 
 	mc.on('swipe', function (ev) {
-		console.log("Sch-wipe!");
+		console.log('Sch-wipe!');
 		// currentPanAnimation.cancel(0);
-		var dur  = 250;
-		var dist = 1000;
+		// var dur  = 250;
+		// var dist = 1000;
 		if (ev.angle > 135 || ev.angle < -135) {
 			// animationSystem.add(WiggleCellAnimationFactory(cell , dur, -0));
 			// animationSystem.add(WiggleCellAnimationFactory(cell2, dur, -dist));
@@ -327,19 +338,19 @@ module.exports = API;
 	});
 
 	var currentPanAnimation = null;
-	mc.on('panstart', function (ev) {
-		console.log("Peter Pan! (Start)");
+	mc.on('panstart', function () {
+		console.log('Peter Pan! (Start)');
 		// Capture position of cell
 		currentPanAnimation = new PanCellAnimationFactory(cell, 0);
 		animationSystem.add(currentPanAnimation.animation);
 	});
 	mc.on('panmove', function (ev) {
-		console.log("Peter Pan! (Move)");
+		console.log('Peter Pan! (Move)');
 		// console.log(ev.deltaX)
 		currentPanAnimation.setdx(ev.deltaX);
 	});
-	mc.on('panend', function (ev) {
-		console.log("Peter Pan (End)!");
+	mc.on('panend', function () {
+		console.log('Peter Pan (End)!');
 		var dur  = 250;
 		currentPanAnimation.cancel(dur);
 	});
