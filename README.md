@@ -1,2 +1,5 @@
-# how-to-pixi
-A collection of examples of how to make graphics with pixi.js.
+# ox.js
+An engine and application framework for building games based on hexagons.
+
+## Usage
+ox.doStuff();
