@@ -1,4 +1,6 @@
-var HexUtil = function () {
+// Define module HexUtil
+
+module.exports = (function () {
 
 	// === Simple Linked List implementation ===
 	// =============================================
@@ -162,4 +164,4 @@ var HexUtil = function () {
 		LinkedList: LinkedList,
 	};
 	return API;
-}();
+}());

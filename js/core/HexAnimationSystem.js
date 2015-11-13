@@ -1,6 +1,8 @@
-// requires HexUtil.LinkedList
+// Define module HexAnimationSystem
 
-var HexAnimationSystem = function () {
+var HexUtil = require('./HexUtil.js');
+
+module.exports = (function () {
 
     // === Animation List ===
     // =============================================
@@ -117,4 +119,4 @@ var HexAnimationSystem = function () {
     };
 
     return API;
-}();
+}());
