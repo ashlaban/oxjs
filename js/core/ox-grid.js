@@ -4,6 +4,7 @@
 /* globals PIXI */
 /* jshint browserify: true */
 
+var OxMath       = require('./ox-math.js');
 var OxCell       = require('./ox-cell.js');
 var OxCoordinate = require('./ox-coordinate.js');
 
@@ -17,8 +18,8 @@ module.exports = (function () {
 
         this._graphics = new PIXI.Graphics();
         this.position  = conf.position;
-        this._graphics.scale.x = conf.scale.x;
-        this._graphics.scale.y = conf.scale.y;
+        // this._graphics.scale.x = conf.scale.x;
+        // this._graphics.scale.y = conf.scale.y;
 
         this.scale = conf.scale;
         this.size  = conf.size;
@@ -28,20 +29,56 @@ module.exports = (function () {
         this.cells = [];
         for (var iy = 0; iy < this.size.h; ++iy) {
             for (var ix = 0; ix < this.size.w; ++ix) {
-
-                var cellPixelCoord  = this.coordinateSystem.offset.toPixelCoordinates(  {i:ix, j:iy} );
-                var cellLinearCoord = this.coordinateSystem.offset.toLinearCoordinates( {i:ix, j:iy} );
+                var cellOffsetCoord = {i:ix, j:iy};
+                var cellPixelCoord  = this.coordinateSystem.offset.toPixelCoordinates( cellOffsetCoord );
+                var cellLinearCoord = this.coordinateSystem.offset.toLinearCoordinates( cellOffsetCoord );
+                
                 var color = (model!==null) ? model[cellLinearCoord].color : (0xffffff);
-                var cell     = new OxCell(     cellPixelCoord,
-                                                this.scale,
-                                                color,
-                                                conf.cell
-                                            );
+                var cell = new OxCell.Cell( cellPixelCoord, this.scale, color, conf.cell);
+
                 this._graphics.addChild(cell._graphics);
                 this.cells.push(cell);
             }
         }
     }
+
+    Grid.prototype.width = function () {
+        return (this.size.w > 1) ?
+            ((this.size.w*0.75+0.5) * OxMath.hexagonWidth) * this.scale.x :
+            (OxMath.hexagonWidth * this.scale.x);
+    };
+    Grid.prototype.height = function () {
+        return (this.size.h > 1) ?
+        ((this.size.h+0.5) * this.scale.y * OxMath.hexagonHeight):
+        ((this.size.h+1.0) * this.scale.y * OxMath.hexagonHeight);
+    };
+
+    Grid.prototype.centerAt = function (point) {
+        var w, h;
+
+        w = this.width();
+        h = this.height();
+
+        this.position = {
+            x: point.x - w/2 + this.scale.x * OxMath.hexagonWidth/2,
+            y: point.y - h/2 + this.scale.y * OxMath.hexagonHeight,
+        }
+
+        this.coordinateSystem.originPixelCoord.x = this.position.x;
+        this.coordinateSystem.originPixelCoord.y = this.position.y;
+        for (var iy = 0; iy < this.size.h; ++iy) {
+            for (var ix = 0; ix < this.size.w; ++ix) {
+                var cellOffsetCoord = {i:ix, j:iy};
+                var cellPixelCoord  = this.coordinateSystem.offset.toPixelCoordinates(cellOffsetCoord);
+                var cell            = this.getCell(cellOffsetCoord);
+
+                cell._graphics.position.x = cellPixelCoord.x;
+                cell._graphics.position.y = cellPixelCoord.y;
+            }
+        }
+
+
+    };
 
     /**
      * The callback function will be provided the offsetCoordinates and the current

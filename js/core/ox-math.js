@@ -29,13 +29,63 @@ module.exports = (function () {
 		southWest: 4,
 		northWest: 5,
 	};
-	
+
 	var cos_30 = 0.86602540378;
 	var cos_60 = 0.5;
 	var sin_30 = 0.5;
     var sin_60 = 0.86602540378;
     var tan_30 = 0.57735026919;
     var tan_60 = 1.73205080757;
+
+    var hexagonWidth  = 4*cos_60; // 2;
+	var hexagonHeight = 2*sin_60; // Math.sqrt(3);
+
+	function randomGaussian(mean, deviation, rand) {
+		// Wikipedia - Box-Muller transform
+		var u1 = rand();
+		var u2 = rand();
+		var z0 = Math.sqrt(-2.0*Math.log(u1))*Math.cos(6.28318530718*u2);
+		// var z1 = Math.sqrt(-2.0*Math.log(u1))*Math.sin(6.28318530718*u2);
+		return z0*deviation + mean;
+	}
+
+	function randomInt(min, max, rand) {
+		return min + Math.floor(rand()*(max-min+1));
+	}
+
+	function randomIntArray(min, max, nElem) { 
+		var a, n, i;
+		a = [];
+		while (a.length < nElem) {
+			n = randomInt(min, max);
+			for (i = a.length - 1; i >= 0; i--) {
+				if (a[i]==n) {continue;}
+			}
+			a.push(n);
+		}
+		return a;
+	}
+
+	function shuffleArray(array, rand) {
+		// Knuth's unbiased shuffle
+		// http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+		var currentIndex = array.length, temporaryValue, randomIndex ;
+
+		// While there remain elements to shuffle...
+		while (0 !== currentIndex) {
+
+		// Pick a remaining element...
+			randomIndex = Math.floor(rand() * currentIndex);
+			currentIndex -= 1;
+
+			// And swap it with the current element.
+			temporaryValue = array[currentIndex];
+			array[currentIndex] = array[randomIndex];
+			array[randomIndex] = temporaryValue;
+		}
+
+		return array;
+	}
 
     var corners = {
     	northEast : [-1      ,  0     ],
@@ -183,16 +233,23 @@ module.exports = (function () {
 	function hexagon(p0, r, coordinateSystem) {
 		p0 = coordinateSystem.toCubeCoordinates(p0);
 
-		if (r === 0) {return [p0];}
+		if (r === 0) {
+			p0.index = 0;
+			return [p0];
+		}
 
     	var results = [];
     	var dir = direction.southWest;
-    	var cube = {x:p0.x + r*dir.x, y:p0.y + r*dir.y, z:p0.z + r*dir.z};
+    	var cube = {x:p0.x + r*dir.x, y:p0.y + r*dir.y, z:p0.z + r*dir.z,};
 	    for (var i = 0; i < 6; ++i) {
+	    	// Choose direction
 	    	dir = direction.asArray[i];
 	        for (var j = 0; j < r; ++j) {
-	            if (coordinateSystem.cube.inBounds(cube)) { results.push(cube); }
-	            // results.push(cube);
+	            if (coordinateSystem.cube.inBounds(cube)) {
+	            	cube.index = i*(j+1);
+	            	results.push(cube);
+	            }
+	            // Walk one step in the chosen direction
 	            cube = {x:cube.x + dir.x, y:cube.y + dir.y, z:cube.z + dir.z,};
 	        }
 	    }
@@ -282,6 +339,14 @@ module.exports = (function () {
 		sin_60 : sin_60,
 		tan_30 : tan_30,
 		tan_60 : tan_60,
+
+		hexagonWidth : hexagonWidth,
+		hexagonHeight: hexagonHeight,
+
+		randomGaussian : randomGaussian,
+		randomInt      : randomInt,
+		randomIntArray : randomIntArray,
+		shuffleArray: shuffleArray,
 
 		hexPoints        : hexPoints,
 		hexShape         : hexShape,

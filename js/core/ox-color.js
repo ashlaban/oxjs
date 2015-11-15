@@ -253,45 +253,43 @@ module.exports = (function () {
     // ========================================================================
     // === Exported API
     // ========================================================================
-    var API = {};
-
-    API.names = {
-        blue     : 0x0000FF,
-        green    : 0x00FF00,
-        red      : 0xFF0000,
-        cyan     : 0x00FFFF,
-        magenta  : 0xFF00FF,
-        yellow   : 0xFFFF00,
-        black    : 0x000000,
-        darkGray : 0x444444,
-        gray     : 0x888888,
-        lightGray: 0xBBBBBB,
-        white    : 0xFFFFFF
-    };
-
-    API.HexPalette = HexPalette;
-    API.pastell = getRandomPastellColor;
-    API.getNEquallySpacedPastellColors = getNEquallySpacedPastellColors;
-    API.brighten = brighten;
-    API.invertValue = invertValue;
-    API.desaturate = desaturate;
-
-    API.RGB = {
-        isRGB: isRGB,
-        toHSV: RGBtoHSV,
-        toINT: RGBtoINT
-    };
-    API.HSV = {
-        isHSV: isHSV,
-        toRGB: HSVtoRGB,
-        toINT: HSVtoINT,
-    };
-    API.INT = {
-        isINT: isINT,
-        toHSV: INTtoHSV,
-        toRGB: INTtoRGB
+    var API = {
+        names: {
+            blue     : 0x0000FF,
+            green    : 0x00FF00,
+            red      : 0xFF0000,
+            cyan     : 0x00FFFF,
+            magenta  : 0xFF00FF,
+            yellow   : 0xFFFF00,
+            black    : 0x000000,
+            darkGray : 0x444444,
+            gray     : 0x888888,
+            lightGray: 0xBBBBBB,
+            white    : 0xFFFFFF
+        },
+        HexPalette : HexPalette,
+        pastell : getRandomPastellColor,
+        getNEquallySpacedPastellColors : getNEquallySpacedPastellColors,
+        brighten : brighten,
+        invertValue : invertValue,
+        desaturate : desaturate,
+        RGB : {
+            isRGB: isRGB,
+            toHSV: RGBtoHSV,
+            toINT: RGBtoINT
+        },
+        HSV : {
+            isHSV: isHSV,
+            toRGB: HSVtoRGB,
+            toINT: HSVtoINT,
+        },
+        INT : {
+            isINT: isINT,
+            toHSV: INTtoHSV,
+            toRGB: INTtoRGB
+        },
     };
 
     return API;
 
-});
+}());

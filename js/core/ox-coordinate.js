@@ -29,7 +29,7 @@ module.exports = (function () {
      * 
      * @param {Object} size Must contain a w and h property.
      */
-    function System ( size, scale, originPixel ) {
+    function System ( size, scale, originPixelCoord ) {
         var self = this;
 
         this.pixel  = {};
@@ -38,10 +38,51 @@ module.exports = (function () {
         this.axial  = {};
         this.linear = {};
 
-        this.originPixel = originPixel; /*For pixel-to-cell conversion*/
-        this.origin   = {i:0, j:0}; /*For future use*/
-        this.scale  = scale;
-        this.size   = size;
+        // TODO: Make pixel-coords optional
+        // For pixel-to-cell conversion
+        if (originPixelCoord !== undefined && originPixelCoord !== null) {
+            this.originPixelCoord = {
+                x: originPixelCoord.x,
+                y: originPixelCoord.y,
+            };
+        } else {
+            this.originPixelCoord = null
+        }
+
+        // TODO: Implement centering and arbitrary bounds.
+        this.originOffsetCoord = {i:0, j:0}; /* currently unused */
+        
+        // For pixel-to-cell conversion
+        if (scale !== undefined && scale !== null) {
+            this.scale  = {
+                x: scale.x,
+                y: scale.y,
+            };
+        } else {
+            this.scale = null;
+        }
+
+        // For conversion between different cell-coordinates
+        this.size   = {
+            w: size.w,
+            h: size.h,
+        };
+
+        // Derived properties
+        // var northWestCornerPixelCoord  = 
+        // var northEastCornerPixelCoord  = 
+        // var southEastCornerPixelCoord  = 
+        // var southWestCornerPixelCoord  = 
+
+        // var a = Math.floor(this.size.w/2);
+        // var b = Math.floor(this.size.h/2);
+        // var c = Math.floor(this.size.w/2);
+        // var d = Math.floor(this.size.w/2);
+
+        // var northWestCornerOffsetCoord = originOffsetCoord.i
+        // var northEastCornerOffsetCoord = 
+        // var southEastCornerOffsetCoord = 
+        // var southWestCornerOffsetCoord = 
 
         // --------------------------------------------------------------------
         // --- Methods declared on sub-objects --------------------------------
@@ -57,8 +98,8 @@ module.exports = (function () {
             return cubeCoord;
         };
         self.pixel.toAxialCoordinates = function (pixelCoord) {
-            pixelCoord.x -= self.originPixel.x;
-            pixelCoord.y -= self.originPixel.y;
+            pixelCoord.x -= self.originPixelCoord.x;
+            pixelCoord.y -= self.originPixelCoord.y;
             var q = pixelCoord.x * 2/3 / self.scale.x;
             var r = (-pixelCoord.x / 3 + Math.sqrt(3)/3 * pixelCoord.y) / self.scale.y;
             var axialCoord = {q:q,r:r};
@@ -71,8 +112,8 @@ module.exports = (function () {
         };
 
         self.offset.toPixelCoordinates = function (offsetCoord) {
-            var cubeCoord  = self.offset.toCubeCoordinates(offsetCoord);
-            var pixelCoord = self.cube.toPixelCoordinates(cubeCoord);
+            var axialCoord = self.offset.toAxialCoordinates(offsetCoord);
+            var pixelCoord = self.axial.toPixelCoordinates(axialCoord);
             return pixelCoord;
         };
         self.offset.toCubeCoordinates = function (offsetCoord) {
@@ -130,8 +171,8 @@ module.exports = (function () {
             var x = self.scale.x * 3/2 * axialCoord.q;
             var y = self.scale.y * Math.sqrt(3) * (axialCoord.r + axialCoord.q/2);
             var pixelCoord = {
-                x:x + self.originPixel.x,
-                y:y + self.originPixel.y,
+                x:x + self.originPixelCoord.x,
+                y:y + self.originPixelCoord.y,
             };
             return pixelCoord;
         };
