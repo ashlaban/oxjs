@@ -27,8 +27,6 @@
     "tests"
   ],
   "devDependencies": {
-    "mersennetwister": "~0.2.2",
-    "hammerjs": "~2.0.4",
     "pixi.js": "~3.0.8"
   }
 }
